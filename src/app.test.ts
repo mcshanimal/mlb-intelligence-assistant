@@ -66,3 +66,42 @@ describe("GET /api/players/search", () => {
         });
     });
 });
+
+describe("GET /api/players/:playerId/stats", () => {
+    it("returns 400 when the season is missing", async () => {
+        const response = await request(app)
+            .get("/api/players/660670/stats");
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            error: "Valid player ID and season are required",
+        });
+    });
+
+    it("returns hitting stats for a player and season", async () => {
+        vi.spyOn(mlbService, "getPlayerHittingStats").mockResolvedValue({
+            gamesPlayed: 100,
+            plateAppearances: 440,
+            atBats: 382,
+            runs: 58,
+            hits: 98,
+            homeRuns: 18,
+            rbi: 49,
+            stolenBases: 20,
+            walks: 50,
+            strikeouts: 99,
+            battingAverage: ".257",
+            onBasePercentage: ".348",
+            sluggingPercentage: ".450",
+            ops: ".798",
+        });
+
+        const response = await request(app)
+            .get("/api/players/660670/stats")
+            .query({ season: 2026 });
+
+        expect(response.status).toBe(200);
+        expect(response.body.homeRuns).toBe(18);
+        expect(response.body.ops).toBe(".798");
+    });
+});

@@ -1,5 +1,8 @@
 import express from "express";
-import { searchPlayer } from "./services/mlbService.js";
+import {
+    searchPlayer,
+    getPlayerHittingStats,
+} from "./services/mlbService.js";
 
 export const app = express();
 
@@ -32,6 +35,27 @@ app.get("/api/players/search", async (request, response) => {
     } catch (error) {
         return response.status(500).json({
             error: "Failed to search for player",
+        });
+    }
+});
+
+app.get("/api/players/:playerId/stats", async (request, response) => {
+    const playerId = Number(request.params.playerId);
+    const season = Number(request.query.season);
+
+    if (!Number.isInteger(playerId) || !Number.isInteger(season)) {
+        return response.status(400).json({
+            error: "Valid player ID and season are required",
+        });
+    }
+
+    try {
+        const stats = await getPlayerHittingStats(playerId, season);
+
+        return response.json(stats);
+    } catch (error) {
+        return response.status(500).json({
+            error: "Failed to retrieve player stats",
         });
     }
 });

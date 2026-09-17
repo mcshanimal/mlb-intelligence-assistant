@@ -19,6 +19,7 @@
     "vitest": "^5.0.1"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1134.0",
     "express": "^5.2.1"
   }
 }

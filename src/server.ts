@@ -1,3 +1,7 @@
-const appName: string = "MLB Intelligence Assistant";
+import { app } from "./app.js";
 
-console.log(`${appName} is starting...`);
+const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
